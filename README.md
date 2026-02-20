@@ -6,6 +6,7 @@ This project is based on [Colsrch/hexo-offline-popup](https://github.com/Colsrch
 ```bash
 git clone https://github.com/hiedanoajuu/hexo-offline-popup-en.git
 cd hexo-offline-popup-en
+npm install
 npm pack
 
 cd /path/to/your/hexo
