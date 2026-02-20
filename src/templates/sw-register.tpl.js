@@ -1,6 +1,7 @@
 /**
  * @file offline-popup register template
  * @author colsrch(colsrch@foxmail.com)
+ * @author hiedanoajuu(hieda@ajuu.org)
  */
 
 /* global navigator, document */

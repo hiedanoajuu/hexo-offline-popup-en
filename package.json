@@ -1,7 +1,7 @@
 {
-  "name": "hexo-offline-popup",
-  "version": "1.0.2",
-  "description": "实现加速Hexo网站的加载速度、网站内容更新弹窗提示",
+  "name": "hexo-offline-popup-en",
+  "version": "1.0.3",
+  "description": "An English translation for hexo-offline-popup.",
   "main": "lib/index.js",
   "directories": {
     "lib": "lib",
@@ -28,15 +28,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Colsrch/hexo-offline-popup.git"
+    "url": "git+https://github.com/hiedanoajuu/hexo-offline-popup-en.git"
   },
   "keywords": [
-    "hexo-offline-popup"
+    "hexo-offline-popup",
+    "hexo-offline-popup-en"
   ],
-  "author": "colsrch",
+  "author": "hiedanoajuu",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Colsrch/hexo-offline-popup/issues"
+    "url": "https://github.com/hiedanoajuu/hexo-offline-popup-en/issues"
   },
-  "homepage": "https://github.com/Colsrch/hexo-offline-popup#readme"
+  "homepage": "https://github.com/hiedanoajuu/hexo-offline-popup-en#readme"
 }
