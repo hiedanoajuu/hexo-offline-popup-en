@@ -1,5 +1,5 @@
 {
-  "name": "hexo-offline-popup-en",
+  "name": "hexo-offline-popup",
   "version": "1.0.3",
   "description": "An English translation for hexo-offline-popup.",
   "main": "lib/index.js",
