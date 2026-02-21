@@ -18,16 +18,17 @@ cd hexo-offline-popup-en
 npm install
 npm pack
 
-// Install the packaged plugin
+# Install the packaged plugin
 cd /path/to/your/hexo
 npm install /path/to/hexo-offline-popup-en/hexo-offline-popup-1.0.3.tgz
 
-// Rebuild your site
+# Rebuild your site
 hexo cl && hexo g
 ```
 
 # Author
 Original Author: Colsrch ([@Colsrch](https://github.com/Colsrch))
+
 Translation: Ajuu Hieda ([@hiedanoajuu](https://github.com/hiedanoajuu))
 
 # License
