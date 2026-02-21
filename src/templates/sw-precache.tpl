@@ -1,8 +1,8 @@
 /**
- * 自动引入模板，在原有 sw-precache 插件默认模板基础上做的二次开发
+ * Automatically import the template, based on the default template of the original sw-precache plugin.
  *
- * 因为是自定导入的模板，项目一旦生成，不支持随 sw-precache 的版本自动升级。
- * 可以到 Lavas 官网下载 basic 模板内获取最新模板进行替换
+ * Because the template is manually imported, once the project is generated, it does not support automatic upgrades with new versions of sw-precache.
+ * Download the basic template from the Lavas website to get the latest template and replace it.
  *
  */
 
@@ -12,7 +12,7 @@
 
 var precacheConfig = <%= precacheConfig %>;
 var cacheName = 'sw-precache-<%= version %>-<%= cacheId %>-' + (self.registration ? self.registration.scope : '');
-var firstRegister = 1; // 默认1是首次安装SW， 0是SW更新
+var firstRegister = 1; // By default, 1 indicates the first installation of SW, and 0 indicates an SW update.
 
 <% if (handleFetch) { %>
 var ignoreUrlParametersMatching = [<%= ignoreUrlParametersMatching %>];
@@ -27,18 +27,18 @@ var addDirectoryIndex = function (originalUrl, index) {
 };
 
 var cleanResponse = function (originalResponse) {
-    // 如果没有重定向响应，不需干啥
+    // If there is no redirect response, no action is required.
     if (!originalResponse.redirected) {
         return Promise.resolve(originalResponse);
     }
 
-    // Firefox 50 及以下不知处 Response.body 流, 所以我们需要读取整个body以blob形式返回。
+    // Firefox 50 and below do not support the Response.body stream, so we need to read the entire body and return it as a blob.
     var bodyPromise = 'body' in originalResponse ?
         Promise.resolve(originalResponse.body) :
         originalResponse.blob();
 
     return bodyPromise.then(function (body) {
-        // new Response() 可同时支持 stream or Blob.
+        // new Response() supports both stream and Blob.
         return new Response(body, {
             headers: originalResponse.headers,
             status: originalResponse.status,
@@ -50,10 +50,10 @@ var cleanResponse = function (originalResponse) {
 var createCacheKey = function (originalUrl, paramName, paramValue,
     dontCacheBustUrlsMatching) {
 
-    // 创建一个新的URL对象，避免影响原始URL
+    // Create a new URL object to avoid affecting the original URL.
     var url = new URL(originalUrl);
 
-    // 如果 dontCacheBustUrlsMatching 值没有设置，或是没有匹配到，将值拼接到url.serach后
+    // If the dontCacheBustUrlsMatching is not set or does not match, append the value to url.search
     if (!dontCacheBustUrlsMatching ||
         !(url.pathname.match(dontCacheBustUrlsMatching))) {
         url.search += (url.search ? '&' : '') +
@@ -64,12 +64,12 @@ var createCacheKey = function (originalUrl, paramName, paramValue,
 };
 
 var isPathWhitelisted = function (whitelist, absoluteUrlString) {
-    // 如果 whitelist 是空数组，则认为全部都在白名单内
+    // If the whitelist is an empty array, then everything is considered to be in the whitelist.
     if (whitelist.length === 0) {
         return true;
     }
 
-    // 否则逐个匹配正则匹配并返回
+    // Otherwise, match each regex one by one and return the result.
     var path = (new URL(absoluteUrlString)).pathname;
     return whitelist.some(function (whitelistedPathRegex) {
         return path.match(whitelistedPathRegex);
@@ -79,23 +79,23 @@ var isPathWhitelisted = function (whitelist, absoluteUrlString) {
 var stripIgnoredUrlParameters = function (originalUrl,
     ignoreUrlParametersMatching) {
     var url = new URL(originalUrl);
-    // 移除 hash; 查看 https://github.com/GoogleChrome/sw-precache/issues/290
+    // Remove the hash; View https://github.com/GoogleChrome/sw-precache/issues/290
     url.hash = '';
 
-    url.search = url.search.slice(1) // 是否包含 '?'
-        .split('&') // 分割成数组 'key=value' 的形式
+    url.search = url.search.slice(1) // If it contains '?'
+        .split('&') // Split into an array in the form of "key=value"
         .map(function (kv) {
-            return kv.split('='); // 分割每个 'key=value' 字符串成 [key, value] 形式
+            return kv.split('='); // // Split each "key=value" into [key, value]
         })
         .filter(function (kv) {
             return ignoreUrlParametersMatching.every(function (ignoredRegex) {
-                return !ignoredRegex.test(kv[0]); // 如果 key 没有匹配到任何忽略参数正则，就 Return true
+                return !ignoredRegex.test(kv[0]); // If the key does not match any ignore parameter regex, return true
             });
         })
         .map(function (kv) {
-            return kv.join('='); // 重新把 [key, value] 格式转换为 'key=value' 字符串
+            return kv.join('='); // Convert the [key, value] format back into a "key=value" string.
         })
-        .join('&'); // 将所有参数 'key=value' 以 '&' 拼接
+        .join('&'); // Concatenate all parameters "key=value" with '&'.
 
     return url.toString();
 };
@@ -122,7 +122,7 @@ var urlsToCacheKeys = new Map(
 
 function setOfCachedUrls(cache) {
     return cache.keys().then(function (requests) {
-        // 如果原cacheName中没有缓存任何收，就默认是首次安装，否则认为是SW更新
+        // If there is no data cached in the original cacheName, it is considered the first installation by default; otherwise, it is considered an SW update.
         if (requests && requests.length > 0) {
             firstRegister = 0; // SW更新
         }
@@ -140,11 +140,11 @@ self.addEventListener('install', function (event) {
             return setOfCachedUrls(cache).then(function (cachedUrls) {
                 return Promise.all(
                     Array.from(urlsToCacheKeys.values()).map(function (cacheKey) {
-                        // 如果缓存中没有匹配到cacheKey，添加进去
+                        // If cacheKey is not found in the cache, add it.
                         if (!cachedUrls.has(cacheKey)) {
                             var request = new Request(cacheKey, { credentials: 'same-origin' });
                             return fetch(request).then(function (response) {
-                                // 只要返回200才能继续，否则直接抛错
+                                // Only proceed if the response returns 200; otherwise, throw an error directly.
                                 if (!response.ok) {
                                     throw new Error('Request for ' + cacheKey + ' returned a ' +
                                         'response with status ' + response.status);
@@ -161,7 +161,7 @@ self.addEventListener('install', function (event) {
         })
             .then(function () {
             <% if (skipWaiting) { %>
-            // 强制 SW 状态 installing -> activate
+            // Force the SW state installing -> activate
             return self.skipWaiting();
             <% } %>
         })
@@ -176,7 +176,7 @@ self.addEventListener('activate', function (event) {
             return cache.keys().then(function (existingRequests) {
                 return Promise.all(
                     existingRequests.map(function (existingRequest) {
-                        // 删除原缓存中相同键值内容
+                        // Delete the content with the same key in the original cache.
                         if (!setOfExpectedUrls.has(existingRequest.url)) {
                             return cache.delete(existingRequest);
                         }
@@ -188,8 +188,8 @@ self.addEventListener('activate', function (event) {
             return self.clients.claim();
             <% } %>
         }).then(function () {
-                // 如果是首次安装 SW 时, 不发送更新消息（是否是首次安装，通过指定cacheName 中是否有缓存信息判断）
-                // 如果不是首次安装，则是内容有更新，需要通知页面重载更新
+                // If it is the first installation of the SW, no update message is sent (whether it is the first installation is determined by checking if there is cached information in the specified cacheName)
+                // Else, it means the content has been updated, and the page needs to be notified to reload for the update.
                 if (!firstRegister) {
                     return self.clients.matchAll()
                         .then(function (clients) {
@@ -209,26 +209,25 @@ self.addEventListener('activate', function (event) {
     self.addEventListener('fetch', function (event) {
         if (event.request.method === 'GET') {
 
-            // 是否应该 event.respondWith()，需要我们逐步的判断
-            // 而且也方便了后期做特殊的特殊
+            // Whether to use event.respondWith() needs to be determined step by step.
+            // This also facilitates specialized processing in the later stage.
             var shouldRespond;
 
-
-            // 首先去除已配置的忽略参数及hash
-            // 查看缓存简直中是否包含该请求，包含就将shouldRespond 设为true
+            // First, remove the configured ignore parameters and hash.
+            // Check whether the cache key contains the request; if it does, set shouldRespond to true.
             var url = stripIgnoredUrlParameters(event.request.url, ignoreUrlParametersMatching);
             shouldRespond = urlsToCacheKeys.has(url);
 
-            // 如果 shouldRespond 是 false, 我们在url后默认增加 'index.html'
-            // (或者是你在配置文件中自行配置的 directoryIndex 参数值)，继续查找缓存列表
+            // If shouldRespond is false, append "index.html" to the URL by default.
+            // (Or the value of directoryIndex you configured yourself in the config file); continue searching the cache list.
             var directoryIndex = '<%= directoryIndex %>';
             if (!shouldRespond && directoryIndex) {
                 url = addDirectoryIndex(url, directoryIndex);
                 shouldRespond = urlsToCacheKeys.has(url);
             }
 
-            // 如果 shouldRespond 仍是 false，检查是否是navigation
-            // request， 如果是的话，判断是否能与 navigateFallbackWhitelist 正则列表匹配
+            // If shouldRespond is still false, check if it is a navigation
+            // request. If so, determine whether it can match the navigateFallbackWhitelist regex.
             var navigateFallback = '<%= navigateFallback %>';
             if (!shouldRespond &&
                 navigateFallback &&
@@ -239,8 +238,8 @@ self.addEventListener('activate', function (event) {
                 shouldRespond = urlsToCacheKeys.has(url);
             }
 
-            // 如果 shouldRespond 被置为 true
-            // 则 event.respondWith()匹配缓存返回结果，匹配不成就直接请求.
+            // If shouldRespond is set to true,
+            // event.respondWith() matches the cache and returns the result; if no match is found, it directly makes a request.
             if (shouldRespond) {
                 event.respondWith(
                     caches.open(cacheName).then(function (cache) {
@@ -251,7 +250,7 @@ self.addEventListener('activate', function (event) {
                             throw Error('The cached response that was expected is missing.');
                         });
                     }).catch(function (e) {
-                        // 如果捕获到异常错误，直接返回 fetch() 请求资源
+                        // If an exception error is caught, directly return the fetch() request resource.
                         console.warn('Couldn\'t serve response for "%s" from cache: %O', event.request.url, e);
                         return fetch(event.request);
                     })
@@ -268,7 +267,7 @@ self.addEventListener('activate', function (event) {
 <% } %>
 
 <% if (runtimeCaching) { %>
-// Runtime cache 配置转换后的 toolbox 代码.
+// Runtime cache configuration converted to toolbox code.
 <%= runtimeCaching %>
 <% } %>
 <% } %>

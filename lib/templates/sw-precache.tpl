@@ -213,7 +213,6 @@ self.addEventListener('activate', function (event) {
             // This also facilitates specialized processing in the later stage.
             var shouldRespond;
 
-
             // First, remove the configured ignore parameters and hash.
             // Check whether the cache key contains the request; if it does, set shouldRespond to true.
             var url = stripIgnoredUrlParameters(event.request.url, ignoreUrlParametersMatching);

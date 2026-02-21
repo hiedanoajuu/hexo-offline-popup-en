@@ -1,6 +1,7 @@
 /**
  * @file run sw-precache
  * @author mj(zoumiaojiang@gmail.com)
+ * @author Ajuu Hieda(hieda@ajuu.org)
  */
 
 /* global public_dir */
@@ -13,19 +14,19 @@ import {
 
 
 /**
- * 对于小于 10 的数字向左补全0
+ * For a number less than 10, pad left with zeros.
  *
- * @param  {number} value 数字
- * @return {string}       补全后的字符串
+ * @param  {number} value A number
+ * @return {string}       Padded string
  */
 function padding(value) {
     return value < 10 ? `0${value}` : value;
 }
 
 /**
- * 获取时间戳版本号
+ * Get timestamp version
  *
- * @return {string} 版本号
+ * @return {string} The version
  */
 function versionGenerator() {
     let d = new Date();
